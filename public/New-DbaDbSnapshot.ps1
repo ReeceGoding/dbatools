@@ -188,6 +188,9 @@ function New-DbaDbSnapshot {
                     Write-Message -Level Warning -Message "$($db.name) is a snapshot, skipping"
                 } elseif ($db.name -in $NoSupportForSnap) {
                     Write-Message -Level Warning -Message "$($db.name) snapshots are prohibited"
+                } elseif ($db.IsAccessible -ne $true -and EngineEdition -eq "Standard" -and -not [string]::IsNullOrEmpty($db.AvailabilityGroupName)) {
+                    # Basic Availability Groups are valid targets.
+                    $InputObject += $db
                 } elseif ($db.IsAccessible -ne $true) {
                     Write-Message -Level Verbose -Message "$($db.name) is not accessible, skipping"
                 } else {
